@@ -12,50 +12,44 @@ for f in util.friend_nodes:
 
 app = FastAPI()
 
+
 @app.get("/file", response_class=FileResponse)
-def getfile(file_name:str, parent:int):
-    friendNodes = []
+def getfile(file_name: str, parent: int):
+    friendNodes = util.friend_nodes
 
-    for i in range(len(util.friend_nodes)):
-        friendNodes.append(util.friend_nodes[i].copy())
 
-    for ownedFile in util.owned_files:
-        if ownedFile == file_name:
-            return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
-                media_type="text", status_code=200)
 
-    if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent:
-        return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
-
+    # for ownedFile in util.owned_files:
+    #     if ownedFile == file_name:
+    #         return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
+    #                             media_type="text", status_code=200)
+    #
+    # if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent:
+    #     return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
 
     for ownFriend in friendNodes:
-        if ownFriend['node_number'] == parent:
+        if ownFriend['node_name'] == parent:
             continue
 
         f = requests.get(f"http://localhost:{ownFriend['node_port']}/file",
-            params={"file_name":file_name, "parent":util.node_number})
-        
+                         params={"file_name": file_name, "parent": util.node_number})
+
         if f.content.decode('ascii') != "-1":
             break
-    
+
     return f
 
 
-    
-
-    
-
-#@router.get("/file")
-#def get_file(name_file: str):
+# @router.get("/file")
+# def get_file(name_file: str):
 #    return FileResponse(path=getcwd() + "/" + name_file)
 
 def run_server():
     if __name__ == "__main__":
-        uvicorn.run(app, host="localhost", port=util.port_number, access_log=False, log_level="critical")
+        uvicorn.run(app, host="localhost", port=util.port_number, access_log=False)
 
 
 def read_request():
-    
     while (True):
         input_str = input()
         x = input_str.split()
@@ -76,7 +70,7 @@ def read_request():
         if not fileFound:
             for ownFriends in util.friend_nodes:
                 f = requests.get(f"http://localhost:{ownFriends['node_port']}/file",
-                    params={"file_name":fileRequested, "parent":util.node_number})
+                                 params={"file_name": fileRequested, "parent": util.node_number})
 
                 if f.content.decode('ascii') != "-1":
                     break
@@ -84,7 +78,6 @@ def read_request():
             fw = open(f"./{util.new_files_dir}/{fileRequested}", "wb")
             fw.write(f.content)
             fw.close()
-        
 
 
 t1 = threading.Thread(target=run_server)
@@ -95,7 +88,3 @@ t2.start()
 
 t1.join()
 t2.join()
-
-
-
-

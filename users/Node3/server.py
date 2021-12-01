@@ -29,7 +29,7 @@ def getfile(file_name:str, parent:int):
 
 
     for ownFriend in friendNodes:
-        if ownFriend['node_number'] == parent:
+        if ownFriend['node_name'] == parent:
             continue
 
         f = requests.get(f"http://localhost:{ownFriend['node_port']}/file",
@@ -51,7 +51,7 @@ def getfile(file_name:str, parent:int):
 
 def run_server():
     if __name__ == "__main__":
-        uvicorn.run(app, host="localhost", port=util.port_number, access_log=False, log_level="critical")
+        uvicorn.run(app, host="localhost", port=util.port_number, access_log=False)
 
 
 def read_request():
