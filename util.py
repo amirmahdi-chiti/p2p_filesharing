@@ -2,7 +2,7 @@ import yaml
 
 port_number: int
 
-a_yaml_file = open("config.yml")
+a_yaml_file = open("Config.yml")
 parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
 node_number = parsed_yaml_file["node_number"]
 port_number = parsed_yaml_file["node_port"]
