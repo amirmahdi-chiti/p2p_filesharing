@@ -1,0 +1,16 @@
+node_number : 1
+node_port : 8081
+owned_files_dir : "./ownedFiles/"
+new_files_dir : "./newFiles/"
+owned_files :
+        - "file1.txt"
+        - "file2.txt"
+        - "file3.txt"
+friend_nodes :
+        -
+                node_name : 2
+                node_port : 8082
+        -
+                node_name : 3
+                node_port : 8083
+

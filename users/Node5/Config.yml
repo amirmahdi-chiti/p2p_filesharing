@@ -1,0 +1,10 @@
+node_number : 5
+node_port : 8085
+owned_files_dir : "./ownedFiles/"
+new_files_dir : "./newFiles/"
+owned_files :
+        - "file8.txt"
+friend_nodes :
+        -
+                node_name : 2
+                node_port : 8082
