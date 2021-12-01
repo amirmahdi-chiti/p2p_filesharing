@@ -4,7 +4,7 @@ port_number: int
 
 a_yaml_file = open("config.yml")
 parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
-
+node_number = parsed_yaml_file["node_number"]
 port_number = parsed_yaml_file["node_port"]
 friend_nodes = parsed_yaml_file["friend_nodes"]
 owned_files_dir = parsed_yaml_file["owned_files_dir"]
@@ -36,7 +36,7 @@ def rearrange(arr, n, x):
         i += 1
 
 
-rearrange(friend_nodes, 2, 4)
+rearrange(friend_nodes, len(friend_nodes), node_number)
 
 for f in friend_nodes:
     for f2 in cp:
