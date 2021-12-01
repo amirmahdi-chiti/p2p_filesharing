@@ -1,6 +1,5 @@
 import uvicorn
 from fastapi import FastAPI
-from file import file
 import util
 import threading
 from fastapi.responses import FileResponse
@@ -14,8 +13,37 @@ for f in util.friend_nodes:
 app = FastAPI()
 
 @app.get("/file", response_class=FileResponse)
-def getfile(file_name:str):
-    return FileResponse(path=f"./{file_name}", media_type="text", status_code=200)
+def getfile(file_name:str, parent:int):
+    friendNodes = []
+
+    for i in range(len(util.friend_nodes)):
+        friendNodes.append(util.friend_nodes[i].copy())
+
+    for ownedFile in util.owned_files:
+        if ownedFile == file_name:
+            return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
+                media_type="text", status_code=200)
+
+    if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent:
+        return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
+
+
+    for ownFriend in friendNodes:
+        if ownFriend['node_number'] == parent:
+            continue
+
+        f = requests.get(f"http://localhost:{ownFriend['node_port']}/file",
+            params={"file_name":file_name, "parent":util.node_number})
+        
+        if f.content.decode('ascii') != "-1":
+            break
+    
+    return f
+
+
+    
+
+    
 
 #@router.get("/file")
 #def get_file(name_file: str):
@@ -31,29 +59,32 @@ def read_request():
     while (True):
         input_str = input()
         x = input_str.split()
-        f = requests.get("http://localhost:4000/file",params={"file_name":"test.txt"})
 
-
-
-        fw = open("new.txt", "wb")
-        # print(f.text)
-        fw.write(f.content)
-        fw.close()
-
-        fa = open("new.html", "rb")
-        print(f.status_code)
-        fa.close()
-        # print(f.iter_content())
-        # fNew = open("new.txt", "w")
-        # f3:file = f
-        # print(f.raise_for_status())
-        # fNew.write(f.text)
-        # fNew.close()
-        # print(f.text)
         if x[0] == "request":
             print("request")
+            fileRequested = x[1]
         else:
             print("command not found")
+            continue
+
+        fileFound = False
+        for ownFile in util.owned_files:
+            if (ownFile == fileRequested):
+                fileFound = True
+                print("GET FILE FROM NODE" + util.node_number)
+
+        if not fileFound:
+            for ownFriends in util.friend_nodes:
+                f = requests.get(f"http://localhost:{ownFriends['node_port']}/file",
+                    params={"file_name":fileRequested, "parent":util.node_number})
+
+                if f.content.decode('ascii') != "-1":
+                    break
+
+            fw = open(f"./{util.new_files_dir}/{fileRequested}", "wb")
+            fw.write(f.content)
+            fw.close()
+        
 
 
 t1 = threading.Thread(target=run_server)
