@@ -5,7 +5,8 @@ import util
 import threading
 from fastapi.responses import FileResponse
 import requests
-
+from os import getcwd
+from fastapi.responses import FileResponse
 
 for f in util.friend_nodes:
     print(f)
@@ -13,14 +14,12 @@ for f in util.friend_nodes:
 app = FastAPI()
 
 @app.get("/file", response_class=FileResponse)
-def getfile(filename: str):
-    print("hi")
-    # f = open("test.txt", "r")
-    # print(f.read())
-    # f.close()
-    return FileResponse(path="./test.txt", media_type="text", status_code=200)
+def getfile(file_name:str):
+    return FileResponse(path=f"./{file_name}", media_type="text", status_code=200)
 
-
+#@router.get("/file")
+#def get_file(name_file: str):
+#    return FileResponse(path=getcwd() + "/" + name_file)
 
 def run_server():
     if __name__ == "__main__":
@@ -32,7 +31,9 @@ def read_request():
     while (True):
         input_str = input()
         x = input_str.split()
-        f = requests.get("http://localhost:4000/file")
+        f = requests.get("http://localhost:4000/file",params={"file_name":"test.txt"})
+
+
 
         fw = open("new.txt", "wb")
         # print(f.text)
