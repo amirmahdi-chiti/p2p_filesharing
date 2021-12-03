@@ -22,6 +22,7 @@ def getfile(file_name: str):
 @app.get("/port")
 def getfile(file_name: str, parent: int):
     friendNodes = []
+    fileFound = False
 
     for i in range(len(util.friend_nodes)):
         friendNodes.append(util.friend_nodes[i].copy())
@@ -30,13 +31,15 @@ def getfile(file_name: str, parent: int):
         if ownedFile == file_name:
             # return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
             #                     media_type="text", status_code=200)
+            print(type(util.port_number))
             return util.port_number
 
-    if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent:
+    if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent and not fileFound:
         # return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
         return -1
 
     for ownFriend in friendNodes:
+        print(f'http://localhost:{ownFriend["node_port"]}/port')
         if ownFriend['node_name'] == parent:
             continue
 
@@ -46,11 +49,12 @@ def getfile(file_name: str, parent: int):
         # if f.content.decode('ascii') != "-1":
         #     break
         f = f.text
-        print(type(f))
-        if f != "-1":
+        print(f)
+        if f != '-1':
+            print("break")
             break
 
-    return f
+    return int(f)
 
 
 # @router.get("/file")
@@ -88,9 +92,8 @@ def read_request():
                 # if f.content.decode('ascii') != "-1":
                 #     break
                 port = port.text
-                #print(port)
-
-                if port != "-1":
+                if port != '-1':
+                    print(f"A file found {port}")
                     break
 
             print(port)
