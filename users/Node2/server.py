@@ -7,34 +7,47 @@ import requests
 from os import getcwd
 from fastapi.responses import FileResponse
 
-for f in util.friend_nodes:
-    print(f)
+# for f in util.friend_nodes:
+#     print(f)
 
 app = FastAPI()
 
 
 @app.get("/file", response_class=FileResponse)
+def getfile(file_name: str):
+    return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
+                        media_type="text", status_code=200)
+
+
+@app.get("/port")
 def getfile(file_name: str, parent: int):
-    friendNodes = util.friend_nodes
+    friendNodes = []
 
+    for i in range(len(util.friend_nodes)):
+        friendNodes.append(util.friend_nodes[i].copy())
 
+    for ownedFile in util.owned_files:
+        if ownedFile == file_name:
+            # return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
+            #                     media_type="text", status_code=200)
+            return util.port_number
 
-    # for ownedFile in util.owned_files:
-    #     if ownedFile == file_name:
-    #         return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
-    #                             media_type="text", status_code=200)
-    #
-    # if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent:
-    #     return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
+    if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent:
+        # return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
+        return -1
 
     for ownFriend in friendNodes:
         if ownFriend['node_name'] == parent:
             continue
 
-        f = requests.get(f"http://localhost:{ownFriend['node_port']}/file",
+        f = requests.get(f'http://localhost:{ownFriend["node_port"]}/port',
                          params={"file_name": file_name, "parent": util.node_number})
 
-        if f.content.decode('ascii') != "-1":
+        # if f.content.decode('ascii') != "-1":
+        #     break
+        f = f.text
+        print(type(f))
+        if f != "-1":
             break
 
     return f
@@ -65,16 +78,24 @@ def read_request():
         for ownFile in util.owned_files:
             if (ownFile == fileRequested):
                 fileFound = True
-                print("GET FILE FROM NODE" + util.node_number)
+                print(f"GET FILE FROM NODE {util.node_number}")
 
         if not fileFound:
             for ownFriends in util.friend_nodes:
-                f = requests.get(f"http://localhost:{ownFriends['node_port']}/file",
-                                 params={"file_name": fileRequested, "parent": util.node_number})
+                port = requests.get(f"http://localhost:{ownFriends['node_port']}/port",
+                                    params={"file_name": fileRequested, "parent": util.node_number})
 
-                if f.content.decode('ascii') != "-1":
+                # if f.content.decode('ascii') != "-1":
+                #     break
+                port = port.text
+                #print(port)
+
+                if port != "-1":
                     break
 
+            print(port)
+            f = requests.get(f"http://localhost:{port}/file",
+                             params={"file_name": fileRequested})
             fw = open(f"./{util.new_files_dir}/{fileRequested}", "wb")
             fw.write(f.content)
             fw.close()
