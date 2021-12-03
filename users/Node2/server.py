@@ -18,10 +18,16 @@ def getfile(file_name: str):
     return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
                         media_type="text", status_code=200)
 
+def checkSeen(node, seenNodes):
+    for seen in seenNodes:
+        if int(seen) == node:
+            return True
+    return False
 
 @app.get("/port")
-def getfile(file_name: str, parent: int):
+def getfile(file_name: str, seen: str):
     friendNodes = []
+    seenNodes = seen.split(",")
     fileFound = False
 
     for i in range(len(util.friend_nodes)):
@@ -32,29 +38,39 @@ def getfile(file_name: str, parent: int):
             # return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
             #                     media_type="text", status_code=200)
             print(type(util.port_number))
-            return util.port_number
+            seenNew = seen + "," + str(util.node_number)
+            return (f'{str(util.port_number)}|{seenNew}')
 
-    if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent and not fileFound:
+    # if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent and not fileFound:
         # return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
-        return -1
+        # return -1
+    cnt = len(friendNodes)
+    for friend in friendNodes:
+        if checkSeen(friend["node_name"], seenNodes):
+            cnt -= 1
+    if cnt == 0:
+        seenNew = seen + "," + str(util.node_number)
+        return (f'-1|{seenNew}')
 
     for ownFriend in friendNodes:
         print(f'http://localhost:{ownFriend["node_port"]}/port')
-        if ownFriend['node_name'] == parent:
+
+        if checkSeen(ownFriend["node_name"], seenNodes):
             continue
 
+        seenNew = seen + "," + str(util.node_number)
         f = requests.get(f'http://localhost:{ownFriend["node_port"]}/port',
-                         params={"file_name": file_name, "parent": util.node_number})
+                         params={"file_name": file_name, "seen": seenNew})
 
         # if f.content.decode('ascii') != "-1":
         #     break
-        f = f.text
+        f = f.text[1:(len(f.text) - 1)]
         print(f)
-        if f != '-1':
+        if f.split("|")[0] != '-1':
             print("break")
             break
 
-    return int(f)
+    return f
 
 
 # @router.get("/file")
@@ -87,17 +103,18 @@ def read_request():
         if not fileFound:
             for ownFriends in util.friend_nodes:
                 port = requests.get(f"http://localhost:{ownFriends['node_port']}/port",
-                                    params={"file_name": fileRequested, "parent": util.node_number})
+                                    params={"file_name": fileRequested,
+                                    "parent": util.node_number, "seen":str(util.node_number)})
 
                 # if f.content.decode('ascii') != "-1":
                 #     break
-                port = port.text
-                if port != '-1':
+                port = port.text[1:(len(port.text) - 1)]
+                if port.split("|")[0] != '-1':
                     print(f"A file found {port}")
                     break
 
             print(port)
-            f = requests.get(f"http://localhost:{port}/file",
+            f = requests.get(f"http://localhost:{port.split('|')[0]}/file",
                              params={"file_name": fileRequested})
             fw = open(f"./{util.new_files_dir}/{fileRequested}", "wb")
             fw.write(f.content)

@@ -13,4 +13,7 @@ friend_nodes :
         -
                 node_name : 3
                 node_port : 8083
+        -
+                node_name : 4
+                node_port : 8084
 
