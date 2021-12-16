@@ -61,7 +61,7 @@ def getfile(file_name: str, seen: str, searchNode: int):
 
         seenNew = seen + "," + str(util.node_number)
         f = requests.get(f'http://localhost:{ownFriend["node_port"]}/port',
-                         params={"file_name": file_name, "seen": seenNew})
+                         params={"file_name": file_name, "seen": seenNew, "searchNode": searchNode})
 
         # if f.content.decode('ascii') != "-1":
         #     break
@@ -133,6 +133,7 @@ def read_request():
                         break
 
             if port.split("|")[0] != '-1':
+                print(f"{port.split('|')[0]}")
                 f = requests.get(f"http://localhost:{port.split('|')[0]}/file",
                                  params={"file_name": fileRequested})
                 fw = open(f"./{util.new_files_dir}/{fileRequested}", "wb")

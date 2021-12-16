@@ -41,7 +41,6 @@ def getfile(file_name: str, seen: str, searchNode: int):
             # return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
             #                     media_type="text", status_code=200)
             seenNew = seen + "," + str(util.node_number)
-            print(f'{str(friend["node_port"])}|{seenNew}')
             return (f'{str(friend["node_port"])}|{seenNew}')
 
     # if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent and not fileFound:
@@ -62,7 +61,7 @@ def getfile(file_name: str, seen: str, searchNode: int):
 
         seenNew = seen + "," + str(util.node_number)
         f = requests.get(f'http://localhost:{ownFriend["node_port"]}/port',
-                         params={"file_name": file_name, "seen": seenNew})
+                         params={"file_name": file_name, "seen": seenNew, "searchNode": searchNode})
 
         # if f.content.decode('ascii') != "-1":
         #     break

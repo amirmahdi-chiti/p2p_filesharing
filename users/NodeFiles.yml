@@ -23,3 +23,11 @@ node_files :
                 node_name : 5
                 node_files :
                         - "file8.txt"
+        -
+                node_name : 6
+                node_files :
+                        - "file20.txt"
+        -
+                node_name : 7
+                node_files : 
+                        - "file21.txt"

@@ -1,0 +1,11 @@
+node_number : 7
+node_port : 8087
+owned_files_dir : "./ownedFiles/"
+new_files_dir : "./newFiles/"
+owned_files :
+        - "file21.txt"
+friend_nodes :
+        - 
+                node_name : 6
+                node_port : 8086
+        
