@@ -78,7 +78,6 @@ def getfile(file_name: str, seen: str, searchNode: int):
 
 def run_server():
     if __name__ == "__main__":
-        print("Hi")
         uvicorn.run(app, host="localhost", port=util.port_number, access_log=False)#,log_level="critical")
 
 def findNodeOfFile(file):

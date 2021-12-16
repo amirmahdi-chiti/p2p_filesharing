@@ -41,6 +41,7 @@ def getfile(file_name: str, seen: str, searchNode: int):
             # return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
             #                     media_type="text", status_code=200)
             seenNew = seen + "," + str(util.node_number)
+            print(f'{str(friend["node_port"])}|{seenNew}')
             return (f'{str(friend["node_port"])}|{seenNew}')
 
     # if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent and not fileFound:
@@ -133,6 +134,7 @@ def read_request():
                         break
 
             if port.split("|")[0] != '-1':
+                print(f"{port.split('|')[0]}")
                 f = requests.get(f"http://localhost:{port.split('|')[0]}/file",
                                  params={"file_name": fileRequested})
                 fw = open(f"./{util.new_files_dir}/{fileRequested}", "wb")

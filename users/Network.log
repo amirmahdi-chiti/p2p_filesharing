@@ -88,3 +88,48 @@
 2021-12-16 23:33:27,966 Uvicorn running on http://localhost:8081 (Press CTRL+C to quit)
 2021-12-16 23:33:36,394 1 requested file10.txt
 2021-12-16 23:33:36,405 1 got file10.txt from port 8084
+2021-12-16 23:38:14,505 Started server process [18808]
+2021-12-16 23:38:14,505 Waiting for application startup.
+2021-12-16 23:38:14,505 Application startup complete.
+2021-12-16 23:38:14,510 Uvicorn running on http://localhost:8082 (Press CTRL+C to quit)
+2021-12-16 23:40:40,288 Started server process [3568]
+2021-12-16 23:40:40,289 Waiting for application startup.
+2021-12-16 23:40:40,289 Application startup complete.
+2021-12-16 23:40:40,293 Uvicorn running on http://localhost:8083 (Press CTRL+C to quit)
+2021-12-16 23:44:00,184 Started server process [18636]
+2021-12-16 23:44:00,184 Waiting for application startup.
+2021-12-16 23:44:00,185 Application startup complete.
+2021-12-16 23:44:00,189 Uvicorn running on http://localhost:8085 (Press CTRL+C to quit)
+2021-12-16 23:44:29,537 Started server process [18092]
+2021-12-16 23:44:29,538 Waiting for application startup.
+2021-12-16 23:44:29,538 Application startup complete.
+2021-12-16 23:44:29,543 Uvicorn running on http://localhost:8081 (Press CTRL+C to quit)
+2021-12-16 23:44:50,538 Started server process [15860]
+2021-12-16 23:44:50,539 Waiting for application startup.
+2021-12-16 23:44:50,539 Application startup complete.
+2021-12-16 23:44:50,544 Uvicorn running on http://localhost:8084 (Press CTRL+C to quit)
+2021-12-16 23:45:19,537 4 requested file5.txt
+2021-12-16 23:48:30,234 Started server process [15320]
+2021-12-16 23:48:30,234 Waiting for application startup.
+2021-12-16 23:48:30,234 Application startup complete.
+2021-12-16 23:48:30,239 Uvicorn running on http://localhost:8084 (Press CTRL+C to quit)
+2021-12-16 23:48:37,352 4 requested file5.txt
+2021-12-16 23:56:28,767 Started server process [17804]
+2021-12-16 23:56:28,768 Waiting for application startup.
+2021-12-16 23:56:28,768 Application startup complete.
+2021-12-16 23:56:28,773 Uvicorn running on http://localhost:8084 (Press CTRL+C to quit)
+2021-12-16 23:57:03,788 4 requested fdavfdv
+2021-12-16 23:57:03,788 couldn't get fdavfdv
+2021-12-16 23:57:09,374 4 requested file4.txt
+2021-12-16 23:57:09,381 4 got file4.txt from port 8082
+2021-12-16 23:58:58,392 Started server process [19996]
+2021-12-16 23:58:58,393 Waiting for application startup.
+2021-12-16 23:58:58,393 Application startup complete.
+2021-12-16 23:58:58,403 Uvicorn running on http://localhost:8084 (Press CTRL+C to quit)
+2021-12-16 23:59:07,452 4 requested file4.txt
+2021-12-16 23:59:07,460 4 got file4.txt from port 8082
+2021-12-16 23:59:18,158 4 requested file5.txt
+2021-12-17 00:00:17,041 Started server process [20504]
+2021-12-17 00:00:17,041 Waiting for application startup.
+2021-12-17 00:00:17,042 Application startup complete.
+2021-12-17 00:00:17,046 Uvicorn running on http://localhost:8084 (Press CTRL+C to quit)
