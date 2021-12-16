@@ -1,5 +1,5 @@
 node_number : 5
-node_port : 8085
+node_port : 8089
 owned_files_dir : "./ownedFiles/"
 new_files_dir : "./newFiles/"
 owned_files :

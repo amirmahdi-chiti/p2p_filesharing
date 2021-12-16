@@ -3,13 +3,19 @@ import yaml
 port_number: int
 
 a_yaml_file = open("Config.yml")
+b_yaml_file = open("../NodeFiles.yml")
+
 parsed_yaml_file = yaml.load(a_yaml_file, Loader=yaml.FullLoader)
+parsed_yaml_file_b = yaml.load(b_yaml_file, Loader=yaml.FullLoader)
+
 node_number = parsed_yaml_file["node_number"]
 port_number = parsed_yaml_file["node_port"]
 friend_nodes = parsed_yaml_file["friend_nodes"]
 owned_files_dir = parsed_yaml_file["owned_files_dir"]
 new_files_dir = parsed_yaml_file["new_files_dir"]
 owned_files = parsed_yaml_file["owned_files"]
+
+node_files = parsed_yaml_file_b["node_files"]
 
 cp = []
 for i in range(len(friend_nodes)):

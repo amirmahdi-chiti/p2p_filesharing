@@ -28,7 +28,7 @@ def checkSeen(node, seenNodes):
     return False
 
 @app.get("/port")
-def getfile(file_name: str, seen: str):
+def getfile(file_name: str, seen: str, searchNode: int):
     friendNodes = []
     seenNodes = seen.split(",")
     fileFound = False
@@ -36,12 +36,12 @@ def getfile(file_name: str, seen: str):
     for i in range(len(util.friend_nodes)):
         friendNodes.append(util.friend_nodes[i].copy())
 
-    for ownedFile in util.owned_files:
-        if ownedFile == file_name:
+    for friend in friendNodes:
+        if friend['node_name'] == searchNode:
             # return FileResponse(path=f"./{util.owned_files_dir}/{file_name}",
             #                     media_type="text", status_code=200)
             seenNew = seen + "," + str(util.node_number)
-            return (f'{str(util.port_number)}|{seenNew}')
+            return (f'{str(friend["node_port"])}|{seenNew}')
 
     # if len(friendNodes) == 1 and friendNodes[0]["node_name"] == parent and not fileFound:
         # return FileResponse(path="NOT_FOUND.txt", media_type="text", status_code=200)
@@ -78,8 +78,14 @@ def getfile(file_name: str, seen: str):
 
 def run_server():
     if __name__ == "__main__":
-        uvicorn.run(app, host="localhost", port=util.port_number, access_log=False,log_level="critical")
+        uvicorn.run(app, host="localhost", port=util.port_number, access_log=False)#,log_level="critical")
 
+def findNodeOfFile(file):
+    for i in util.node_files:
+        for f in i['node_files']:
+            if f == file:
+                return i['node_name']
+    return -1
 
 def read_request():
     while (True):
@@ -94,23 +100,37 @@ def read_request():
             print("command not found")
             continue
 
-        fileFound = False
-        for ownFile in util.owned_files:
-            if (ownFile == fileRequested):
-                fileFound = True
-                print(f"GET FILE FROM NODE {util.node_number}")
-                logging.info(f" node {util.node_number} got {fileRequested} from port {util.port_number}")
-        if not fileFound:
-            for ownFriends in util.friend_nodes:
-                port = requests.get(f"http://localhost:{ownFriends['node_port']}/port",
-                                    params={"file_name": fileRequested,
-                                    "parent": util.node_number, "seen":str(util.node_number)})
+        nodeSearchName = findNodeOfFile(fileRequested)
 
-                # if f.content.decode('ascii') != "-1":
-                #     break
-                port = port.text[1:(len(port.text) - 1)]
-                if port.split("|")[0] != '-1':
-                    break
+        if nodeSearchName == -1:
+            print(f"couldn't get {fileRequested}")
+            logging.warning(f"couldn't get {fileRequested}")
+            continue
+
+        fileFound = False
+        if nodeSearchName == util.node_number:
+            fileFound = True
+            print(f"GET FILE FROM NODE {util.node_number}")
+            logging.info(f" node {util.node_number} got {fileRequested} from port {util.port_number}")
+
+        if not fileFound:
+            portFound = False
+            for friend in util.friend_nodes:
+                if friend['node_name'] == nodeSearchName:
+                    port = f"{friend['node_port']}|NOT"
+                    portFound = True
+            if not portFound:
+                for ownFriends in util.friend_nodes:
+                    port = requests.get(f"http://localhost:{ownFriends['node_port']}/port",
+                                        params={"file_name": fileRequested,
+                                        "parent": util.node_number, "seen":str(util.node_number), "searchNode": nodeSearchName})
+
+                    # if f.content.decode('ascii') != "-1":
+                    #     break
+                    port = port.text[1:(len(port.text) - 1)]
+                    if port.split("|")[0] != '-1':
+                        portFound = True
+                        break
 
             if port.split("|")[0] != '-1':
                 f = requests.get(f"http://localhost:{port.split('|')[0]}/file",
